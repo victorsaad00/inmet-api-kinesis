@@ -1,0 +1,17 @@
+[
+    {   
+        "CD_ESTACAO": "A301",
+        "DT_MEDICAO":"2021-07-06", 
+        "DC_NOME": "RECIFE",
+        "LATITUDE": "-8.05916666", 
+        "LONGITUDE": "-34.95916666",
+        "HR_MEDICAO": "2000",
+        "TEMP_MAX": 28.0,
+        "TEMP_INS":27,
+        "UMD_MIN":65,
+        "UMD_INS":88,
+        "RAD_GLO":-3.54
+    }
+]
+
+

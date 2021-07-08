@@ -11,8 +11,10 @@ provider:
       Action:
         - kinesis:PutRecord
         - kinesis:PutRecords
+        - s3:GetObject
       Resource:
         - Fn::GetAtt: [ kinesisStream, Arn ]
+        - "arn:aws:s3:::*"
 
 functions:
   getData:
@@ -22,6 +24,71 @@ functions:
           path: /inmetdata
           method: get
 
+  routerTempMax:
+    handler: routes/routerTempMax.tempMax
+    environment:
+      bucket: inmet-bucket-data-proj4
+    events:
+      - http:
+          path: /tempmax
+          method: get
+      - s3:
+          bucket: inmet-bucket-data-proj4
+          event: s3:ObjectCreated:Put
+          existing: true
+
+  routerTempMed:
+    handler: routes/routerTempMed.tempMed
+    environment:
+      bucket: inmet-bucket-data-proj4
+    events:
+      - http:
+          path: /tempmed
+          method: get
+      - s3:
+          bucket: inmet-bucket-data-proj4
+          event: s3:ObjectCreated:Post
+          existing: true
+
+  routerUmidMin:
+    handler: routes/routerUmidMin.umidMin
+    environment:
+      bucket: inmet-bucket-data-proj4
+    events:
+      - http:
+          path: /umidmin
+          method: get
+      - s3:
+          bucket: inmet-bucket-data-proj4
+          event: s3:ObjectCreated:Copy
+          existing: true
+
+  routerUmdMed:
+    handler: routes/routerUmidMed.umidMed
+    environment:
+      bucket: inmet-bucket-data-proj4
+    events:
+      - http:
+          path: /umidmed
+          method: get
+      - s3:
+          bucket: inmet-bucket-data-proj4
+          event: s3:ObjectCreated:CompleteMultipartUpload
+          existing: true
+
+  routerRadiacao:
+    handler: routes/routerRadiacao.radiacao
+    environment:
+      bucket: inmet-bucket-data-proj4
+    events:
+      - http:
+          path: /radiacao
+          method: get
+      - s3:
+          bucket: inmet-bucket-data-proj4
+          event: s3:ObjectRestore:Post
+          existing: true
+
 resources:
   Resources:
     kinesisStream:
@@ -29,4 +96,4 @@ resources:
       Properties:
         Name: eventStream
         RetentionPeriodHours: 24
-        ShardCount: 3
+        ShardCount: 1
